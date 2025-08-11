@@ -2,9 +2,9 @@
 
 namespace ChrisReedIO\Mailosaur\Tests;
 
+use ChrisReedIO\Mailosaur\MailosaurServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use ChrisReedIO\Mailosaur\MailosaurServiceProvider;
 
 class TestCase extends Orchestra
 {
