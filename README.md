@@ -85,6 +85,53 @@ public function __invoke()
 $mailosaur = app(\ChrisReedIO\Mailosaur\Mailosaur::class);
 ```
 
+## Convenience methods (no server ID needed)
+
+These helpers use your configured `MAILOSAUR_SERVER_ID` automatically:
+
+```php
+// Find a single message matching criteria
+Mailosaur::getMessage(SearchCriteria $criteria, int $timeout = 10000, ?DateTime $receivedAfter = null, ?string $dir = null): \Mailosaur\Models\Message
+
+// Search for messages
+Mailosaur::searchMessages(SearchCriteria $criteria, int $page = 0, int $itemsPerPage = 50, ?int $timeout = null, ?DateTime $receivedAfter = null, bool $errorOnTimeout = true, ?string $dir = null): \Mailosaur\Models\MessageListResult
+
+// List all messages
+Mailosaur::allMessages(int $page = 0, int $itemsPerPage = 50, ?DateTime $receivedAfter = null, ?string $dir = null): \Mailosaur\Models\MessageListResult
+
+// Delete all messages on the configured server
+Mailosaur::deleteAllMessages(): void
+
+// Create a message to a verified email address
+Mailosaur::createMessage(\Mailosaur\Models\MessageCreateOptions $options): \Mailosaur\Models\Message
+
+// Generate a random email address for the configured server
+Mailosaur::generateEmailAddress(): string
+```
+
+### Examples using convenience methods
+
+```php
+use ChrisReedIO\Mailosaur\Facades\Mailosaur;
+use Mailosaur\Models\SearchCriteria;
+
+// Get a single matching message
+$criteria = new SearchCriteria();
+$criteria->sentTo = 'anything@' . Mailosaur::domain();
+$message = Mailosaur::getMessage($criteria);
+
+// Search with timeout and receivedAfter
+$testStart = new \DateTime();
+$result = Mailosaur::searchMessages($criteria, itemsPerPage: 10, timeout: 10_000, receivedAfter: $testStart);
+
+// List and delete all
+$list = Mailosaur::allMessages(itemsPerPage: 10);
+Mailosaur::deleteAllMessages();
+
+// Generate a random address on the configured server
+$address = Mailosaur::generateEmailAddress();
+```
+
 ## Common examples
 
 ### Find an email (wait for the next matching message)
@@ -96,7 +143,10 @@ use Mailosaur\Models\SearchCriteria;
 $criteria = new SearchCriteria();
 $criteria->sentTo = 'anything@' . Mailosaur::domain();
 
+// Using raw SDK (requires serverId)
 $message = Mailosaur::messages()->get(Mailosaur::serverId(), $criteria);
+// Or with convenience method (no serverId needed)
+// $message = Mailosaur::getMessage($criteria);
 
 // e.g. assert subject
 // expect($message->subject)->toBe('My example email');
@@ -114,11 +164,10 @@ $criteria = new SearchCriteria();
 $criteria->sentTo = 'anything@' . Mailosaur::domain();
 
 // timeout in ms, receivedAfter as DateTime
-$message = Mailosaur::messages()->get(
-    Mailosaur::serverId(),
-    $criteria,
-    10_000,
-    $testStart
+$message = Mailosaur::getMessage(
+    criteria: $criteria,
+    timeout: 10_000,
+    receivedAfter: $testStart
 );
 ```
 
@@ -127,7 +176,7 @@ $message = Mailosaur::messages()->get(
 ```php
 use ChrisReedIO\Mailosaur\Facades\Mailosaur;
 
-$emailAddress = Mailosaur::client()->servers->generateEmailAddress(Mailosaur::serverId());
+$emailAddress = Mailosaur::generateEmailAddress();
 // e.g. "bgwqj@SERVER_ID.mailosaur.net"
 ```
 
@@ -136,7 +185,7 @@ $emailAddress = Mailosaur::client()->servers->generateEmailAddress(Mailosaur::se
 ```php
 use ChrisReedIO\Mailosaur\Facades\Mailosaur;
 
-Mailosaur::client()->messages->deleteAll(Mailosaur::serverId());
+Mailosaur::deleteAllMessages();
 ```
 
 For many more operations (attachments, forwarding, replying, etc.), see the official Mailosaur PHP docs: [Mailosaur PHP – Find an email](https://mailosaur.com/docs/languages/php#4-find-an-email-for-automated-testing).
