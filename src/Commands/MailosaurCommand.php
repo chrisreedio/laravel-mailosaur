@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace ChrisReedIO\Mailosaur\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class MailosaurCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-mailosaur';
 
     public $description = 'My command';
 
