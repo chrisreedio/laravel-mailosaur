@@ -2,9 +2,9 @@
 
 namespace ChrisReedIO\Mailosaur;
 
+use ChrisReedIO\Mailosaur\Commands\MailosaurCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use ChrisReedIO\Mailosaur\Commands\MailosaurCommand;
 
 class MailosaurServiceProvider extends PackageServiceProvider
 {
@@ -17,9 +17,9 @@ class MailosaurServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('laravel-mailosaur')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_laravel_mailosaur_table')
-            ->hasCommand(MailosaurCommand::class);
+            ->hasConfigFile();
+        // ->hasViews()
+        // ->hasMigration('create_laravel_mailosaur_table')
+        // ->hasCommand(MailosaurCommand::class);
     }
 }
