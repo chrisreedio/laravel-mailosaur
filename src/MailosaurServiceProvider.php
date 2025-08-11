@@ -2,9 +2,9 @@
 
 namespace ChrisReedIO\Mailosaur;
 
+use ChrisReedIO\Mailosaur\Commands\MailosaurCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use ChrisReedIO\Mailosaur\Commands\MailosaurCommand;
 
 class MailosaurServiceProvider extends PackageServiceProvider
 {
